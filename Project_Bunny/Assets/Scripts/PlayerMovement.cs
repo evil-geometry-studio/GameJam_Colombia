@@ -48,7 +48,7 @@ public class PlayerMovement : MonoBehaviour
             if (hit.collider != null)
             {
                 Debug.Log(hit.transform.position);
-                //Habilitar el conteo de tiempo para aplicar fuerza
+                //Habilitar el conteo de tiempo para aplicar fuerza,
             }
         }
 
