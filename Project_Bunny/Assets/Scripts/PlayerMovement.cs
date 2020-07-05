@@ -14,6 +14,12 @@ public class PlayerMovement : MonoBehaviour
 
     public float countTime = 0f;
 
+    bool hitIncrement;
+
+    public float fuerzaBrecha = 3;
+
+    public float lastCountTime;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -51,15 +57,21 @@ public class PlayerMovement : MonoBehaviour
                 //Habilitar el conteo de tiempo para aplicar fuerza,
             }
         }
-
-        //Permitir este if contar tiempo si se detecto colision con un objeto
-        if (Input.GetMouseButton(0))
+        if (Input.GetMouseButton(0) && hitIncrement == true)
         {
-            countTime += Time.deltaTime * 1.2f;
-            //Preguntar si el tiempo ya excedio 10 o el valor máximo
-            //asignarle ese valor a count time
+            countTime += Time.deltaTime * fuerzaBrecha;
+
+            if (countTime > 10f)
+            {
+                countTime = 10f;
+            }
         }
-        //Si se dejo de presionar, resetear el tiempo
+        else if (Input.GetMouseButtonUp(0))
+        {
+            lastCountTime = countTime;
+            countTime = 0f;
+            hitIncrement = false;
+        }
     }
 
     private void FixedUpdate()
