@@ -18,6 +18,8 @@ public class PlayerMovement : MonoBehaviour
 
     public float fuerzaBrecha = 3;
 
+    public float lastCountTime;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -70,11 +72,10 @@ public class PlayerMovement : MonoBehaviour
         }
         else if (Input.GetMouseButtonUp(0))
         {
+            lastCountTime = countTime;
             countTime = 0f;
             hitIncrement = false;
         }
-
-
     }
 
     private void FixedUpdate()
