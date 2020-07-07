@@ -243,11 +243,11 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 3
+  m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 1
-  m_Material: {fileID: 6200000, guid: 46f0b8a05580069448afa5fea1c66de6, type: 2}
+  m_Material: {fileID: 0}
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
@@ -266,6 +266,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speedMove: 5
   mainCamera: {fileID: 519420031}
+  gapPosition: {x: 0, y: 0, z: 0}
+  countTime: 0
+  fuerzaBrecha: 3
+  lastCountTime: 0
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -451,8 +455,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1322078451}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.151, y: -1.6393421, z: 0}
-  m_LocalScale: {x: 17.627087, y: 1, z: 1}
+  m_LocalPosition: {x: -0.002, y: -1.6393421, z: 0}
+  m_LocalScale: {x: 19.92577, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 2
