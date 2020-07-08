@@ -15,7 +15,7 @@ namespace CommandInput
         public enum TheKeysButtons { GoRight, GoLeft, CreateGap, InteractionObjs }
         //En que estado se encuentran los inputs, puede ser que ya se hayan invertido
         //Si se quieren más estados, añadirlo al enum y crear la sentencia if correspondiente en el metodo GetKeyCode
-        public enum StateInput { Default, Inverted_1, }
+        public enum StateInput { Default, Inverted_1, Inverted_2}
 
         //El estado cuando un boton es presionado a fondo
         public static bool GetKeyButtonDown(TheKeysButtons btn, StateInput state)
@@ -36,6 +36,13 @@ namespace CommandInput
         {
             KeyCode code = GetKeyCode(btn, state);
             return Input.GetKey(code);
+        }
+
+        //Metodo para saber la asignación de los botones
+        public static string ShowButtons(TheKeysButtons btn, StateInput state)
+        {
+            KeyCode code = GetKeyCode(btn, state);
+            return code.ToString();
         }
 
         static KeyCode GetKeyCode(TheKeysButtons btn, StateInput state)
@@ -63,6 +70,18 @@ namespace CommandInput
                     case TheKeysButtons.InteractionObjs: return KeyCode.D;
                 }
             }
+            else if(state == StateInput.Inverted_2)
+            {
+                //Estado invertido 2, devuelve el la asignación de la acción al estado correspondiente
+                switch (btn)
+                {
+                    case TheKeysButtons.GoRight: return KeyCode.D;
+                    case TheKeysButtons.GoLeft: return KeyCode.Mouse0;
+                    case TheKeysButtons.CreateGap: return KeyCode.A;
+                    case TheKeysButtons.InteractionObjs: return KeyCode.Mouse1;
+                }
+            }
+            
 
             return KeyCode.None;
         }

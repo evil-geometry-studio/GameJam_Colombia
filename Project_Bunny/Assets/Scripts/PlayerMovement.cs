@@ -55,8 +55,7 @@ public class PlayerMovement : MonoBehaviour
     GameObject newGap; //Referecnia a la brecha creada
     float distancePlayerGap = 0f; //La distancia entre el jugador y la brecha
 
-    // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         //Asigna la instancia de esta clase, para el singleton
         instance = this;
