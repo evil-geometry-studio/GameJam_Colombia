@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using CommandInput;
+using UnityEngine.UI;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -25,14 +26,20 @@ public class PlayerMovement : MonoBehaviour
     public Vector3 gapPosition;
 
     //Fuerza que se aplicará para desplazarse a la brecha
-    [HideInInspector]
-    public float forceOnTime = 0f;
+    //[HideInInspector]
+    public float forceOnTime = 10f;
 
     //Bandera para indicar cuando se puede incrementar la fuerza que se aplicará
     bool hitIncrement;
 
     //Fuerza que se suma cada tiempo que se mantiene presionado el mouse
-    public float forceAddedOnTime = 3;
+    [HideInInspector]
+    public float forceAddedOnTime = 5;
+
+    //La cantidad máxima de fuerza que se puede añadir
+    public float maxForceAdded = 10f;
+
+    public Slider forceIndicator;
 
     [HideInInspector]
     public bool canMoveToGap = false; //Saber cuando se puede mover el jugador hacia la brecha
@@ -56,6 +63,10 @@ public class PlayerMovement : MonoBehaviour
 
         //Se obtiene el componente RigidBody2D
         rbd2D = GetComponent<Rigidbody2D>();
+
+        forceIndicator.maxValue = maxForceAdded;
+        forceIndicator.minValue = 10f;
+        forceIndicator.value = forceIndicator.minValue;
     }
 
     // Update is called once per frame
@@ -130,10 +141,12 @@ public class PlayerMovement : MonoBehaviour
         if (CommandInputs.GetKeyButton(CommandInputs.TheKeysButtons.CreateGap, curStateInputs) && hitIncrement == true && newGap == null)
         {
             forceOnTime += Time.deltaTime * forceAddedOnTime; //Añade fuerza a lo largo del tiempo, mientras se mantiene presionado el botón designado
+            forceIndicator.value = forceOnTime;
 
-            if (forceOnTime > 10f) //Si llega a 10, ya no puede aumentar más la fuerza
+            if (forceOnTime > maxForceAdded) //Si llega a 10, ya no puede aumentar más la fuerza
             {
-                forceOnTime = 10f; //Le ponemos diez como maximo
+                forceOnTime = maxForceAdded; //Le ponemos diez como maximo
+                forceIndicator.value = forceIndicator.minValue;
 
                 newGap = Instantiate(gapPrefab, gapSpawnPos.position, gapSpawnPos.rotation); //Creamos un nueva brecha, dandole una posicion y direccion en base al spawn de brechas, también, se hace una referencia a la brecha
                 newGap.GetComponent<Gap>().InitGap(gapPosition, forceOnTime); //Obtenemos su componente Gap para inicializar la brecha
@@ -143,14 +156,15 @@ public class PlayerMovement : MonoBehaviour
         else if (CommandInputs.GetKeyButtonUp(CommandInputs.TheKeysButtons.CreateGap, curStateInputs) && hitIncrement == true && newGap == null) //Si se ha liberado la telca
         {
             hitIncrement = false; //Ya no es posible incrementar la fuerza, puede ser que no haya llegado a 10, que sea menor
+            forceIndicator.value = forceIndicator.minValue;
 
-            if (forceOnTime < 10) //Solo si es menor a 10, tenemos que crear la brecha
+            if (forceOnTime < maxForceAdded) //Solo si es menor a 10, tenemos que crear la brecha
             {
                 newGap = Instantiate(gapPrefab, gapSpawnPos.position, gapSpawnPos.rotation); //Creamos un nueva brecha, dandole una posicion y direccion en base al spawn de brechas, también, se hace una referencia a la brecha
                 newGap.GetComponent<Gap>().InitGap(gapPosition, forceOnTime); //Obtenemos su componente Gap para inicializar la brecha
             }
 
-            forceOnTime = 0f; //Reseteamos la fuerza que se aplico a lo largo del tiempo en que estuvo presionado el boton para el lanzamiento
+            forceOnTime = 10f; //Reseteamos la fuerza que se aplico a lo largo del tiempo en que estuvo presionado el boton para el lanzamiento
         }
         #endregion
 
@@ -158,14 +172,14 @@ public class PlayerMovement : MonoBehaviour
         if (canMoveToGap) //Solo será posible moverse a la brecha cuando la misa haya llegado a su destino, para dar la indicación al jugador de moverse
         {
             rbd2D.gravityScale = 0f; //Cuando se esta moviendo no queremos que se aplique gravedad
-            transform.position = Vector2.MoveTowards(transform.position, gapPosition, speedMove * 2 * Time.deltaTime); //El jugador se movera a la misma posición que se le dio a la brecha
+            transform.position = Vector2.MoveTowards(transform.position, gapPosition, forceOnTime * 2 * Time.deltaTime); //El jugador se movera a la misma posición que se le dio a la brecha
             distancePlayerGap = Vector3.Distance(transform.position, gapPosition); //Obtenemos la distacnia entre el jugador y la brecha
             if (distancePlayerGap < 1f) //Si es menoer a 1
             {
-                rbd2D.gravityScale = 1f; //Volvemos a activar la gravedad, 1 = -9.8f
+                rbd2D.gravityScale = 1.5f; //Volvemos a activar la gravedad, 1 = -9.8f
                 canMoveToGap = false; //El jugador ya no puede dirigirse hacia la brecha, pues ya llego
-                forceOnTime = 0; //Se resetea la fuerza a lo largo del tiempo, solo para asegurar, ya que entre tanto input a veces no respetaba esto
-                Destroy(newGap, 0.5f); //Como tenemos referencia a la brecha que se creo, podemos destruirla una vez que el jugador tiene la misma posición
+                forceOnTime = 10; //Se resetea la fuerza a lo largo del tiempo, solo para asegurar, ya que entre tanto input a veces no respetaba esto
+                Destroy(newGap, 0.15f); //Como tenemos referencia a la brecha que se creo, podemos destruirla una vez que el jugador tiene la misma posición
                 if(newGap == null) //Si esta destruida la brecha
                 {
                     canCreateGap = true; //El jugador puede crear una nueva brecha
